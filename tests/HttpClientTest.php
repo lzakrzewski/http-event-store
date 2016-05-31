@@ -8,9 +8,7 @@ class HttpClientTest extends EventStoreTestCase
     /** @test */
     public function it_can_read_a_stream()
     {
-        $streamId = 'stream-id';
-        
-        $this->assertEquals('contents', $this->client->readStream($streamId));
+        $this->assertEquals('contents', $this->client->readStream('stream-id'));
     }
 
     /** @test */
