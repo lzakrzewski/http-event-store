@@ -1,0 +1,29 @@
+{
+  "name": "lzakrzewski/http-event-store-client",
+  "type": "library",
+  "description": "Client for communication with event store http api",
+  "require": {
+    "php": ">=5.5",
+    "guzzlehttp/guzzle": "~6.0"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "lzakrzewski",
+      "email": "contact@lzakrzewski.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "HttpEventStoreClient\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "tests\\HttpEventStoreClient\\": "tests"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~5.0"
+  }
+}
