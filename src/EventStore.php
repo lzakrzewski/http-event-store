@@ -17,12 +17,11 @@ interface EventStore
 
     /**
      * @param $streamId
-     *
+     * @param WritableToStream[] $events
+     * 
      * @throws EventStoreException
-     *
-     * @param $contents
      */
-    public function writeStream($streamId, $contents);
+    public function writeStream($streamId, array $events);
 
     /**
      * @param $eventUri

@@ -2,7 +2,10 @@
 
 namespace tests\HttpEventStore\Http;
 
-//Todo: Invalid JSON test-cases
+use HttpEventStore\Exception\EventStoreConnectionFailed;
+use HttpEventStore\Exception\StreamDoesNotExist;
+use HttpEventStore\WritableEvent;
+use Ramsey\Uuid\Uuid;
 use tests\HttpEventStore\EventStoreTestCase;
 
 class HttpEventStoreTest extends EventStoreTestCase
@@ -10,19 +13,51 @@ class HttpEventStoreTest extends EventStoreTestCase
     /** @test */
     public function it_can_read_a_stream()
     {
-        $this->assertEmpty($this->eventStore->readStream('stream-id'));
+        $streamId = Uuid::uuid4()->toString();
+
+        $this->given([
+            $streamId => [
+                new WritableEvent('event1', ['message' => 'text1']),
+                new WritableEvent('event2', ['message' => 'text2']),
+            ],
+        ]);
+
+        $this->assertEquals(
+            [
+                new WritableEvent('event1', ['message' => 'text1']),
+                new WritableEvent('event2', ['message' => 'text2']),
+            ],
+            $this->eventStore->readStream($streamId)
+        );
     }
 
     /** @test */
-    public function it_can_read_an_empty_stream()
+    public function it_fails_when_event_store_does_not_exist_during_reading_a_stream()
     {
-        $this->markTestIncomplete();
+        $this->expectException(StreamDoesNotExist::class);
+
+        $streamId = Uuid::uuid4()->toString();
+
+        $this->eventStore->readStream($streamId);
     }
 
     /** @test */
-    public function it_fails_when_stream_does_not_exists_during_reading_a_stream()
+    public function it_fails_when_event_store_fails_during_reading_a_stream()
     {
-        $this->markTestIncomplete();
+        $this->expectException(EventStoreConnectionFailed::class);
+
+        $streamId = Uuid::uuid4()->toString();
+
+        $this->given([
+            $streamId => [
+                new WritableEvent('event1', ['message' => 'text1']),
+                new WritableEvent('event2', ['message' => 'text2']),
+            ],
+        ]);
+
+        $this->givenEventStoreFailed();
+
+        $this->eventStore->readStream($streamId);
     }
 
     /** @test */

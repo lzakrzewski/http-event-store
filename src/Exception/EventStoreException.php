@@ -2,6 +2,6 @@
 
 namespace HttpEventStore\Exception;
 
-final class EventStoreException extends \RuntimeException
+interface EventStoreException
 {
 }

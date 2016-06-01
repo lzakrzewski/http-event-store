@@ -2,14 +2,22 @@
 
 namespace HttpEventStore\Http;
 
-use GuzzleHttp\ClientInterface as GuzzleInterface;
 use GuzzleHttp\Client as Guzzle;
+use GuzzleHttp\ClientInterface as GuzzleInterface;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Pool;
+use GuzzleHttp\Psr7\Request;
 use HttpEventStore\EventStore;
-use HttpEventStore\Exception\EventStoreException;
+use HttpEventStore\Exception\EventStoreConnectionFailed;
+use HttpEventStore\Exception\StreamDoesNotExist;
+use HttpEventStore\WritableEvent;
+use Psr\Http\Message\ResponseInterface;
+use Ramsey\Uuid\Uuid;
 
 class HttpEventStore implements EventStore
 {
+    const STREAM_DOES_NOT_EXIST = 404;
+    
     /** @var GuzzleInterface */
     private $guzzle;
 
@@ -53,22 +61,36 @@ class HttpEventStore implements EventStore
             $response = $this->guzzle->request('GET', $this->streamUri($streamId), [
                 'headers' => ['Accept' => ['application/vnd.eventstore.events+json']],
             ]);
-            return json_decode($response->getBody()->getContents(), true);
+
+            $result = json_decode($response->getBody()->getContents(), true);
+
+            if (!isset($result['entries'])) {
+                return [];
+            }
+
+            return $this->readEvents(
+                array_map(
+                    function (array $entry) {
+                        return $entry['id'];
+                    },
+                    $result['entries']
+                )
+            );
         } catch (RequestException $e) {
-            return [];
+            $this->handleException($e);
         }
     }
 
     /** {@inheritdoc} */
-    public function writeStream($streamId, $contents)
+    public function writeStream($streamId, array $events)
     {
         try {
             $this->guzzle->request('POST', $this->streamUri($streamId), [
                 'headers' => ['Content-Type' => ['application/vnd.eventstore.events+json']],
-                'body'    => $contents,
+                'body'    => $this->serialize($events),
             ]);
         } catch (RequestException $e) {
-            throw new EventStoreException($e->getMessage());
+            $this->handleException($e);
         }
     }
 
@@ -82,8 +104,53 @@ class HttpEventStore implements EventStore
     {
     }
 
+    private function readEvents(array $eventUris)
+    {
+        $requests = array_map(
+            function ($eventUri) {
+                return new Request('GET', $eventUri,  ['Accept' => ['application/vnd.eventstore.atom+json']]);
+            },
+            $eventUris
+        );
+        
+        $responses = Pool::batch($this->guzzle, $requests);
+
+        return array_reverse(array_map(function (ResponseInterface $response) {
+            $contents = json_decode($response->getBody()->getContents(), true);
+
+            return new WritableEvent(
+                $contents['content']['eventType'],
+                $contents['content']['data']
+            );
+        }, $responses));
+    }
+
     private function streamUri($streamId)
     {
         return sprintf('%s/streams/%s', $this->uri, $streamId);
+    }
+
+    private function serialize(array $events)
+    {
+        $data = [];
+
+        foreach ($events as $event) {
+            $data[]     = [
+                'eventId'   => Uuid::uuid4()->toString(),
+                'eventType' => $event->type(),
+                'data'      => $event->data(),
+            ];
+        }
+
+        return json_encode($data);
+    }
+
+    private function handleException(RequestException $exception)
+    {
+        if ($exception->getCode() === self::STREAM_DOES_NOT_EXIST) {
+            throw new StreamDoesNotExist($exception->getMessage());    
+        }
+        
+        throw new EventStoreConnectionFailed($exception->getMessage());
     }
 }
