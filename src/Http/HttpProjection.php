@@ -6,6 +6,7 @@ use HttpEventStore\Projection;
 
 class HttpProjection implements Projection
 {
+    
     /** {@inheritdoc} */
     public function createProjection($projectionId, $query)
     {

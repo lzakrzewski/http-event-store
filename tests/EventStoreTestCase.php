@@ -23,7 +23,7 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
 
     protected function givenEventStoreFailed()
     {
-        $this->eventStore = new HttpEventStore($this->guzzle, 'localhost', '21131111');
+        $this->eventStore = new HttpEventStore($this->guzzle, '128.0.0.1', '2113');
     }
 
     protected function assertThatStreamContainsEvents(array $events, $streamId)
@@ -49,7 +49,7 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->guzzle = new Guzzle();
-        $this->eventStore = new HttpEventStore($this->guzzle, 'localhost', '2113');
+        $this->eventStore = new HttpEventStore($this->guzzle, '127.0.0.1', '2113');
     }
 
     /** {@inheritdoc} */

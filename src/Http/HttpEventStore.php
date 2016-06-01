@@ -26,34 +26,26 @@ class HttpEventStore implements EventStore
     /** @var string */
     private $uri;
 
-    /** @var string */
-    private $auth;
-
     /**
      * @param Guzzle $guzzle
      * @param string $host
      * @param string $port
-     * @param string|null $username
-     * @param string|null $password
      */
-    public function __construct(Guzzle $guzzle, $host, $port, $username = null, $password = null)
+    public function __construct(Guzzle $guzzle, $host, $port)
     {
         $this->guzzle = $guzzle;
-        $this->uri = sprintf("%s:%s", $host, $port);
-        $this->auth = [$username, $password];
+        $this->uri = sprintf('%s:%s', $host, $port);
     }
 
     /**
      * @param $host
      * @param $port
-     * @param string|null $username
-     * @param string|null $password
      *
      * @return HttpEventStore
      */
-    public static function create($host, $port, $username = null, $password = null)
+    public static function create($host, $port)
     {
-        return new self(new Guzzle(), $host, $port, $username, $password);
+        return new self(new Guzzle(), $host, $port);
     }
 
     /** {@inheritdoc} */
