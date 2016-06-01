@@ -3,10 +3,7 @@
 namespace tests\HttpEventStore;
 
 use GuzzleHttp\Client as Guzzle;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Request;
+use HttpEventStore\Exception\StreamDoesNotExist;
 use HttpEventStore\Http\HttpEventStore;
 
 abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
@@ -27,6 +24,23 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
     protected function givenEventStoreFailed()
     {
         $this->eventStore = new HttpEventStore($this->guzzle, 'localhost', '21131111');
+    }
+
+    protected function assertThatStreamContainsEvents(array $events, $streamId)
+    {
+        $this->assertEquals($events, $this->eventStore->readStream($streamId));
+    }
+
+    protected function assertThatStreamDoesNotExist($streamId)
+    {
+        $exception = null;
+
+        try {
+            $this->eventStore->readStream($streamId);
+        } catch (\Exception $exception) {
+        }
+
+        $this->assertInstanceOf(StreamDoesNotExist::class, $exception);
     }
 
     /** {@inheritdoc} */

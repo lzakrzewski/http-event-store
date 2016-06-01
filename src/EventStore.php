@@ -24,15 +24,6 @@ interface EventStore
     public function writeStream($streamId, array $events);
 
     /**
-     * @param $eventUri
-     *
-     * @throws EventStoreException
-     *
-     * @return string
-     */
-    public function readEvent($eventUri);
-
-    /**
      * @param $streamId
      *
      * @throws EventStoreException

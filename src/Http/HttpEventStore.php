@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
 use HttpEventStore\EventStore;
+use HttpEventStore\Exception\CannotWriteStreamWithoutEvents;
 use HttpEventStore\Exception\EventStoreConnectionFailed;
 use HttpEventStore\Exception\StreamDoesNotExist;
 use HttpEventStore\WritableEvent;
@@ -17,7 +18,8 @@ use Ramsey\Uuid\Uuid;
 class HttpEventStore implements EventStore
 {
     const STREAM_DOES_NOT_EXIST = 404;
-    
+    const REQUEST_BODY_INVALID = 400;
+
     /** @var GuzzleInterface */
     private $guzzle;
 
@@ -95,13 +97,13 @@ class HttpEventStore implements EventStore
     }
 
     /** {@inheritdoc} */
-    public function readEvent($eventUri)
-    {
-    }
-
-    /** {@inheritdoc} */
     public function deleteStream($streamId)
     {
+        try {
+            $this->guzzle->request('DELETE', $this->streamUri($streamId), ['headers' => ['Content-Type' => ['application/vnd.eventstore.events+json']]]);
+        } catch (RequestException $e) {
+            $this->handleException($e);
+        }
     }
 
     private function readEvents(array $eventUris)
@@ -150,7 +152,11 @@ class HttpEventStore implements EventStore
         if ($exception->getCode() === self::STREAM_DOES_NOT_EXIST) {
             throw new StreamDoesNotExist($exception->getMessage());    
         }
-        
+
+        if ($exception->getCode() === self::REQUEST_BODY_INVALID  && empty(json_decode($exception->getRequest()->getBody()))) {
+            throw new CannotWriteStreamWithoutEvents($exception->getMessage());
+        }
+
         throw new EventStoreConnectionFailed($exception->getMessage());
     }
 }
