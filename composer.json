@@ -1,5 +1,5 @@
 {
-  "name": "lzakrzewski/http-event-store-client",
+  "name": "lzakrzewski/http-event-store",
   "type": "library",
   "description": "Client for communication with event store http api",
   "require": {
@@ -15,12 +15,12 @@
   ],
   "autoload": {
     "psr-4": {
-      "HttpEventStoreClient\\": "src"
+      "HttpEventStore\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "tests\\HttpEventStoreClient\\": "tests"
+      "tests\\HttpEventStore\\": "tests"
     }
   },
   "require-dev": {

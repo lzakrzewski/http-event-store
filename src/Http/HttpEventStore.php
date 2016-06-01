@@ -1,12 +1,14 @@
 <?php
 
-namespace HttpEventStoreClient;
+namespace HttpEventStore\Http;
 
 use GuzzleHttp\ClientInterface as GuzzleInterface;
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Exception\RequestException;
+use HttpEventStore\EventStore;
+use HttpEventStore\Exception\EventStoreException;
 
-class HttpClient implements Client
+class HttpEventStore implements EventStore
 {
     /** @var GuzzleInterface */
     private $guzzle;
@@ -37,7 +39,7 @@ class HttpClient implements Client
      * @param string|null $username
      * @param string|null $password
      *
-     * @return HttpClient
+     * @return HttpEventStore
      */
     public static function create($host, $port, $username = null, $password = null)
     {
@@ -47,8 +49,6 @@ class HttpClient implements Client
     /** {@inheritdoc} */
     public function readStream($streamId)
     {
-        return 'contents';
-        
         try {
             $response = $this->guzzle->request('GET', $this->streamUri($streamId), [
                 'headers' => ['Accept' => ['application/vnd.eventstore.events+json']],
@@ -79,16 +79,6 @@ class HttpClient implements Client
 
     /** {@inheritdoc} */
     public function deleteStream($streamId)
-    {
-    }
-
-    /** {@inheritdoc} */
-    public function createProjection($projectionId, $query)
-    {
-    }
-
-    /** {@inheritdoc} */
-    public function readProjection($projectionId)
     {
     }
 

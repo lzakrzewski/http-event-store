@@ -1,8 +1,10 @@
 <?php
 
-namespace HttpEventStoreClient;
+namespace HttpEventStore;
 
-interface Client
+use HttpEventStore\Exception\EventStoreException;
+
+interface EventStore
 {
     /**
      * @param $streamId
@@ -37,23 +39,4 @@ interface Client
      * @throws EventStoreException
      */
     public function deleteStream($streamId);
-
-    /**
-     * @param $projectionId
-     * @param $query
-     *
-     * @throws EventStoreException
-     * 
-     * @return string
-     */
-    public function createProjection($projectionId, $query);
-
-    /**
-     * @param $projectionId
-     *
-     * @throws EventStoreException
-     * 
-     * @return string
-     */
-    public function readProjection($projectionId);
 }

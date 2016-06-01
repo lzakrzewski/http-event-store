@@ -1,26 +1,32 @@
 <?php
 
-namespace tests\HttpEventStoreClient;
+namespace tests\HttpEventStore;
 
-use HttpEventStoreClient\HttpClient;
+use GuzzleHttp\Client as Guzzle;
+use HttpEventStore\Http\HttpEventStore;
 
 abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
 {
-    /** @var HttpClient */
-    protected $client;
+    /** @var HttpEventStore */
+    protected $eventStore;
+    
+    /** @var HttpEventStore */
+    protected $guzzle;
     
     /** {@inheritdoc} */
     protected function setUp()
     {
         parent::setUp();
 
-        $this->client = new HttpClient();
+        $this->guzzle = new Guzzle();
+        $this->eventStore = new HttpEventStore($this->guzzle, 'localhost', '2113');
     }
 
     /** {@inheritdoc} */
     protected function tearDown()
     {
-        $this->client = null;
+        $this->guzzle = null;
+        $this->eventStore = null;
 
         parent::tearDown();
     }

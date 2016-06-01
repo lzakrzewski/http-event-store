@@ -1,14 +1,16 @@
 <?php
 
-namespace tests\HttpEventStoreClient;
+namespace tests\HttpEventStore\Http;
 
 //Todo: Invalid JSON test-cases
-class HttpClientTest extends EventStoreTestCase
+use tests\HttpEventStore\EventStoreTestCase;
+
+class HttpEventStoreTest extends EventStoreTestCase
 {
     /** @test */
     public function it_can_read_a_stream()
     {
-        $this->assertEquals('contents', $this->client->readStream('stream-id'));
+        $this->assertEmpty($this->eventStore->readStream('stream-id'));
     }
 
     /** @test */
@@ -67,30 +69,6 @@ class HttpClientTest extends EventStoreTestCase
 
     /** @test */
     public function it_fails_when_an_event_does_not_exists_during_reading_event()
-    {
-        $this->markTestIncomplete();
-    }
-
-    /** @test */
-    public function it_can_create_a_projection()
-    {
-        $this->markTestIncomplete();
-    }
-
-    /** @test */
-    public function it_read_projection()
-    {
-        $this->markTestIncomplete();
-    }
-
-    /** @test */
-    public function it_read_empty_projection()
-    {
-        $this->markTestIncomplete();
-    }
-
-    /** @test */
-    public function it_fails_when_a_projection_does_not_exists_during_reading_projection()
     {
         $this->markTestIncomplete();
     }
