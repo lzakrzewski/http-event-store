@@ -12,7 +12,7 @@ class HttpProjectionTest extends EventStoreTestCase
     /** @test */
     public function it_can_create_a_projection()
     {
-        $streamId = Uuid::uuid4()->toString();
+        $streamId     = Uuid::uuid4()->toString();
         $projectionId = 'projection-'.$streamId;
 
         $this->given([
@@ -30,7 +30,7 @@ class HttpProjectionTest extends EventStoreTestCase
     /** @test */
     public function it_reads_projection()
     {
-        $streamId = Uuid::uuid4()->toString();
+        $streamId     = Uuid::uuid4()->toString();
         $projectionId = 'projection-'.$streamId;
 
         $this->given([
@@ -48,7 +48,7 @@ class HttpProjectionTest extends EventStoreTestCase
     /** @test */
     public function it_reads_empty_projection()
     {
-        $streamId = Uuid::uuid4()->toString();
+        $streamId     = Uuid::uuid4()->toString();
         $projectionId = 'projection-'.$streamId;
 
         $this->projection->createProjection($projectionId, $this->countEventsQuery($streamId));
@@ -60,8 +60,8 @@ class HttpProjectionTest extends EventStoreTestCase
     public function it_fails_when_event_store_connection_failed_during_creating_a_projection()
     {
         $this->expectException(EventStoreConnectionFailed::class);
-        
-        $streamId = Uuid::uuid4()->toString();
+
+        $streamId     = Uuid::uuid4()->toString();
         $projectionId = 'projection-'.$streamId;
 
         $this->given([
@@ -80,10 +80,10 @@ class HttpProjectionTest extends EventStoreTestCase
     public function it_fails_when_event_store_connection_failed_during_reading_a_projection()
     {
         $this->expectException(EventStoreConnectionFailed::class);
-        
-        $streamId = Uuid::uuid4()->toString();
+
+        $streamId     = Uuid::uuid4()->toString();
         $projectionId = 'projection-'.$streamId;
-        
+
         $this->givenEventStoreFailed();
 
         $this->projection->readProjection($projectionId);

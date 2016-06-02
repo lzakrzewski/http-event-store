@@ -11,10 +11,10 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
 {
     /** @var Guzzle */
     protected $guzzle;
-    
+
     /** @var HttpEventStore */
     protected $eventStore;
-    
+
     /** @var HttpProjection */
     protected $projection;
 
@@ -58,7 +58,7 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->guzzle = new Guzzle();
+        $this->guzzle     = new Guzzle();
         $this->eventStore = new HttpEventStore($this->guzzle, '127.0.0.1', '2113');
         $this->projection = new HttpProjection($this->guzzle, '127.0.0.1', '2113', 'admin', 'changeit');
     }
@@ -66,7 +66,7 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
     /** {@inheritdoc} */
     protected function tearDown()
     {
-        $this->guzzle = null;
+        $this->guzzle     = null;
         $this->eventStore = null;
         $this->projection = null;
 

@@ -2,11 +2,11 @@
 
 namespace HttpEventStore\Http;
 
+use GuzzleHttp\Client as Guzzle;
+use GuzzleHttp\ClientInterface as GuzzleInterface;
 use GuzzleHttp\Exception\RequestException;
 use HttpEventStore\Exception\EventStoreConnectionFailed;
 use HttpEventStore\Projection;
-use GuzzleHttp\Client as Guzzle;
-use GuzzleHttp\ClientInterface as GuzzleInterface;
 
 class HttpProjection implements Projection
 {
@@ -29,8 +29,8 @@ class HttpProjection implements Projection
     public function __construct(Guzzle $guzzle, $host, $port, $username, $password)
     {
         $this->guzzle = $guzzle;
-        $this->uri = sprintf('%s:%s', $host, $port);
-        $this->auth = [$username, $password];
+        $this->uri    = sprintf('%s:%s', $host, $port);
+        $this->auth   = [$username, $password];
     }
 
     /** {@inheritdoc} */

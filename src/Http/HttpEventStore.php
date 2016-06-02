@@ -18,7 +18,7 @@ use Ramsey\Uuid\Uuid;
 class HttpEventStore implements EventStore
 {
     const STREAM_DOES_NOT_EXIST = 404;
-    const REQUEST_BODY_INVALID = 400;
+    const REQUEST_BODY_INVALID  = 400;
 
     /** @var GuzzleInterface */
     private $guzzle;
@@ -34,7 +34,7 @@ class HttpEventStore implements EventStore
     public function __construct(Guzzle $guzzle, $host, $port)
     {
         $this->guzzle = $guzzle;
-        $this->uri = sprintf('%s:%s', $host, $port);
+        $this->uri    = sprintf('%s:%s', $host, $port);
     }
 
     /**
@@ -102,11 +102,11 @@ class HttpEventStore implements EventStore
     {
         $requests = array_map(
             function ($eventUri) {
-                return new Request('GET', $eventUri,  ['Accept' => ['application/vnd.eventstore.atom+json']]);
+                return new Request('GET', $eventUri, ['Accept' => ['application/vnd.eventstore.atom+json']]);
             },
             $eventUris
         );
-        
+
         $responses = Pool::batch($this->guzzle, $requests);
 
         return array_reverse(array_map(function (ResponseInterface $response) {
@@ -129,7 +129,7 @@ class HttpEventStore implements EventStore
         $data = [];
 
         foreach ($events as $event) {
-            $data[]     = [
+            $data[] = [
                 'eventId'   => Uuid::uuid4()->toString(),
                 'eventType' => $event->type(),
                 'data'      => $event->data(),
@@ -142,7 +142,7 @@ class HttpEventStore implements EventStore
     private function handleException(RequestException $exception)
     {
         if ($exception->getCode() === self::STREAM_DOES_NOT_EXIST) {
-            throw new StreamDoesNotExist($exception->getMessage());    
+            throw new StreamDoesNotExist($exception->getMessage());
         }
 
         if ($exception->getCode() === self::REQUEST_BODY_INVALID  && empty(json_decode($exception->getRequest()->getBody()))) {

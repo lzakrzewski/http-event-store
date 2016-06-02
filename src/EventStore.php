@@ -18,7 +18,7 @@ interface EventStore
     /**
      * @param $streamId
      * @param WritableToStream[] $events
-     * 
+     *
      * @throws EventStoreException
      */
     public function writeStream($streamId, array $events);
