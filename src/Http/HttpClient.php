@@ -30,10 +30,10 @@ class HttpClient
      * @param GuzzleInterface $guzzle
      * @param string          $host
      * @param string          $port
-     * @param string          $username
-     * @param string          $password
+     * @param string|null     $username
+     * @param string|null     $password
      */
-    public function __construct(GuzzleInterface $guzzle, $host, $port, $username, $password)
+    public function __construct(GuzzleInterface $guzzle, $host, $port, $username = null, $password = null)
     {
         $this->guzzle = $guzzle;
         $this->url    = sprintf('%s:%s', $host, $port);

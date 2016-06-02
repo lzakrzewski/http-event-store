@@ -6,6 +6,9 @@ use HttpEventStore\Exception\EventStoreException;
 
 interface EventStore
 {
+    const STREAM_DOES_NOT_EXIST = 404;
+    const REQUEST_BODY_INVALID  = 400;
+
     /**
      * @param $streamId
      *

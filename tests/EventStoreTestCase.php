@@ -4,9 +4,11 @@ namespace tests\HttpEventStore;
 
 use GuzzleHttp\Client as Guzzle;
 use HttpEventStore\Exception\StreamDoesNotExist;
+use HttpEventStore\Http\HttpClient;
 use HttpEventStore\Http\HttpEventStore;
 use HttpEventStore\Http\HttpProjection;
 
+//Todo: Add factory methods
 abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
 {
     /** @var Guzzle */
@@ -27,7 +29,7 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
 
     protected function givenEventStoreFailed()
     {
-        $this->eventStore = new HttpEventStore($this->guzzle, '128.0.0.1', '2113');
+        $this->eventStore = new HttpEventStore(new HttpClient($this->guzzle, '128.0.0.1', '2113'));
         $this->projection = new HttpProjection($this->guzzle, '128.0.0.1', '2113', 'admin', 'changeit');
     }
 
@@ -59,7 +61,7 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->guzzle     = new Guzzle();
-        $this->eventStore = new HttpEventStore($this->guzzle, '127.0.0.1', '2113');
+        $this->eventStore = new HttpEventStore(new HttpClient($this->guzzle, '127.0.0.1', '2113'));
         $this->projection = new HttpProjection($this->guzzle, '127.0.0.1', '2113', 'admin', 'changeit');
     }
 
