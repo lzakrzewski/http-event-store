@@ -5,14 +5,18 @@ namespace tests\HttpEventStore;
 use GuzzleHttp\Client as Guzzle;
 use HttpEventStore\Exception\StreamDoesNotExist;
 use HttpEventStore\Http\HttpEventStore;
+use HttpEventStore\Http\HttpProjection;
 
 abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
 {
+    /** @var Guzzle */
+    protected $guzzle;
+    
     /** @var HttpEventStore */
     protected $eventStore;
     
-    /** @var Guzzle */
-    protected $guzzle;
+    /** @var HttpProjection */
+    protected $projection;
 
     protected function given(array $events)
     {
@@ -24,6 +28,7 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
     protected function givenEventStoreFailed()
     {
         $this->eventStore = new HttpEventStore($this->guzzle, '128.0.0.1', '2113');
+        $this->projection = new HttpProjection($this->guzzle, '128.0.0.1', '2113', 'admin', 'changeit');
     }
 
     protected function assertThatStreamContainsEvents(array $events, $streamId)
@@ -43,6 +48,11 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(StreamDoesNotExist::class, $exception);
     }
 
+    protected function assertThatProjectionExists($projectionId)
+    {
+        $this->assertNotNull($this->projection->readProjection($projectionId));
+    }
+
     /** {@inheritdoc} */
     protected function setUp()
     {
@@ -50,6 +60,7 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
 
         $this->guzzle = new Guzzle();
         $this->eventStore = new HttpEventStore($this->guzzle, '127.0.0.1', '2113');
+        $this->projection = new HttpProjection($this->guzzle, '127.0.0.1', '2113', 'admin', 'changeit');
     }
 
     /** {@inheritdoc} */
@@ -57,6 +68,7 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
     {
         $this->guzzle = null;
         $this->eventStore = null;
+        $this->projection = null;
 
         parent::tearDown();
     }

@@ -59,7 +59,7 @@ class HttpEventStoreTest extends EventStoreTestCase
     }
 
     /** @test */
-    public function it_fails_when_event_store_does_not_exist_during_reading_a_stream()
+    public function it_fails_when_stream_does_not_exist_during_reading_a_stream()
     {
         $this->expectException(StreamDoesNotExist::class);
 

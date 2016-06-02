@@ -11,8 +11,6 @@ interface Projection
      * @param $query
      *
      * @throws EventStoreException
-     *
-     * @return string
      */
     public function createProjection($projectionId, $query);
 
@@ -21,7 +19,7 @@ interface Projection
      *
      * @throws EventStoreException
      *
-     * @return string
+     * @return array|null
      */
     public function readProjection($projectionId);
 }
