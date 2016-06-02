@@ -2,51 +2,32 @@
 
 namespace HttpEventStore\Http;
 
-use GuzzleHttp\Client as Guzzle;
-use GuzzleHttp\ClientInterface as GuzzleInterface;
 use GuzzleHttp\Exception\RequestException;
 use HttpEventStore\Exception\EventStoreConnectionFailed;
 use HttpEventStore\Projection;
 
 class HttpProjection implements Projection
 {
-    /** @var GuzzleInterface */
-    private $guzzle;
-
-    /** @var string */
-    private $uri;
-
-    /** @var string */
-    private $auth;
+    /** @var HttpClient */
+    private $client;
 
     /**
-     * @param Guzzle $guzzle
-     * @param string $host
-     * @param string $port
-     * @param string $username
-     * @param string $password
+     * @param HttpClient $client
      */
-    public function __construct(Guzzle $guzzle, $host, $port, $username, $password)
+    public function __construct(HttpClient $client)
     {
-        $this->guzzle = $guzzle;
-        $this->uri    = sprintf('%s:%s', $host, $port);
-        $this->auth   = [$username, $password];
+        $this->client = $client;
     }
 
     /** {@inheritdoc} */
     public function createProjection($projectionId, $query)
     {
         try {
-            $this->guzzle->request(
-                'POST',
-                sprintf('%s/projections/onetime?name=%s&enabled=yes', $this->uri, $projectionId),
-                [
-                    'headers' => [
-                        'Content-Type' => ['application/json'],
-                    ],
-                    'body' => $query,
-                    'auth' => $this->auth,
-                ]
+            $this->client->request(
+                HttpClient::METHOD_POST,
+                $this->oneTimeProjectionUri($projectionId),
+                $query,
+                HttpClient::FORMAT_PROJECTION
             );
         } catch (RequestException $e) {
             throw new EventStoreConnectionFailed($e->getMessage());
@@ -57,18 +38,13 @@ class HttpProjection implements Projection
     public function readProjection($projectionId)
     {
         try {
-            $response = $this->guzzle
+            $result = $this->client
                 ->request(
-                    'GET',
-                    sprintf('%s/projection/%s/result', $this->uri, $projectionId),
-                    [
-                        'headers' => [
-                            'Accept' => ['application/json'],
-                        ],
-                    ]
+                    HttpClient::METHOD_GET,
+                    $this->projectionResultUri($projectionId),
+                    null,
+                    HttpClient::FORMAT_PROJECTION
                 );
-
-            $result = (array) json_decode($response->getBody()->getContents(), true);
 
             if (empty($result)) {
                 return;
@@ -78,5 +54,15 @@ class HttpProjection implements Projection
         } catch (RequestException $e) {
             throw new EventStoreConnectionFailed($e->getMessage());
         }
+    }
+
+    private function oneTimeProjectionUri($projectionId)
+    {
+        return sprintf('projections/onetime?name=%s&enabled=yes', $projectionId);
+    }
+
+    private function projectionResultUri($projectionId)
+    {
+        return sprintf('projection/%s/result', $projectionId);
     }
 }

@@ -11,14 +11,14 @@ use HttpEventStore\Http\HttpProjection;
 //Todo: Add factory methods
 abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
 {
-    /** @var Guzzle */
-    protected $guzzle;
-
     /** @var HttpEventStore */
     protected $eventStore;
 
     /** @var HttpProjection */
     protected $projection;
+
+    /** @var HttpClient */
+    private $client;
 
     protected function given(array $events)
     {
@@ -29,8 +29,9 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
 
     protected function givenEventStoreFailed()
     {
-        $this->eventStore = new HttpEventStore(new HttpClient($this->guzzle, '128.0.0.1', '2113'));
-        $this->projection = new HttpProjection($this->guzzle, '128.0.0.1', '2113', 'admin', 'changeit');
+        $this->client     = new HttpClient(new Guzzle(), '128.0.0.1', '2113', 'admin', 'changeit');
+        $this->eventStore = new HttpEventStore($this->client);
+        $this->projection = new HttpProjection($this->client);
     }
 
     protected function assertThatStreamContainsEvents(array $events, $streamId)
@@ -60,15 +61,15 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->guzzle     = new Guzzle();
-        $this->eventStore = new HttpEventStore(new HttpClient($this->guzzle, '127.0.0.1', '2113'));
-        $this->projection = new HttpProjection($this->guzzle, '127.0.0.1', '2113', 'admin', 'changeit');
+        $this->client     = new HttpClient(new Guzzle(), '127.0.0.1', '2113', 'admin', 'changeit');
+        $this->eventStore = new HttpEventStore($this->client);
+        $this->projection = new HttpProjection($this->client);
     }
 
     /** {@inheritdoc} */
     protected function tearDown()
     {
-        $this->guzzle     = null;
+        $this->client     = null;
         $this->eventStore = null;
         $this->projection = null;
 
