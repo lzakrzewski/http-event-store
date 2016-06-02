@@ -8,7 +8,6 @@ use HttpEventStore\Http\HttpClient;
 use HttpEventStore\Http\HttpEventStore;
 use HttpEventStore\Http\HttpProjection;
 
-//Todo: Add factory methods
 abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
 {
     /** @var HttpEventStore */

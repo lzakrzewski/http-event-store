@@ -2,6 +2,7 @@
 
 namespace HttpEventStore\Http;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use HttpEventStore\EventStore;
 use HttpEventStore\Exception\CannotWriteStreamWithoutEvents;
@@ -21,6 +22,17 @@ class HttpEventStore implements EventStore
     public function __construct(HttpClient $client)
     {
         $this->client = $client;
+    }
+
+    /**
+     * @param $host
+     * @param $port
+     *
+     * @return HttpEventStore
+     */
+    public static function create($host, $port)
+    {
+        return new self(new HttpClient(new Client(), $host, $port));
     }
 
     /** {@inheritdoc} */

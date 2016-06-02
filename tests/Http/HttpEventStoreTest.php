@@ -5,12 +5,19 @@ namespace tests\HttpEventStore\Http;
 use HttpEventStore\Exception\CannotWriteStreamWithoutEvents;
 use HttpEventStore\Exception\EventStoreConnectionFailed;
 use HttpEventStore\Exception\StreamDoesNotExist;
+use HttpEventStore\Http\HttpEventStore;
 use HttpEventStore\WritableEvent;
 use Ramsey\Uuid\Uuid;
 use tests\HttpEventStore\EventStoreTestCase;
 
 class HttpEventStoreTest extends EventStoreTestCase
 {
+    /** @test */
+    public function it_can_be_created_with_factory_method()
+    {
+        $this->assertInstanceOf(HttpEventStore::class, HttpEventStore::create('localhost', '2113'));
+    }
+
     /** @test */
     public function it_can_read_a_stream()
     {

@@ -3,12 +3,19 @@
 namespace tests\HttpEventStore\Http;
 
 use HttpEventStore\Exception\EventStoreConnectionFailed;
+use HttpEventStore\Http\HttpProjection;
 use HttpEventStore\WritableEvent;
 use Ramsey\Uuid\Uuid;
 use tests\HttpEventStore\EventStoreTestCase;
 
 class HttpProjectionTest extends EventStoreTestCase
 {
+    /** @test */
+    public function it_can_be_created_with_factory_method()
+    {
+        $this->assertInstanceOf(HttpProjection::class, HttpProjection::create('localhost', '2113', 'admin', 'changeit'));
+    }
+
     /** @test */
     public function it_can_create_a_projection()
     {

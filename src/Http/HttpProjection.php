@@ -2,6 +2,7 @@
 
 namespace HttpEventStore\Http;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use HttpEventStore\Exception\EventStoreConnectionFailed;
 use HttpEventStore\Projection;
@@ -17,6 +18,19 @@ class HttpProjection implements Projection
     public function __construct(HttpClient $client)
     {
         $this->client = $client;
+    }
+
+    /**
+     * @param $host
+     * @param $port
+     * @param $username
+     * @param $password
+     *
+     * @return HttpProjection
+     */
+    public static function create($host, $port, $username, $password)
+    {
+        return new self(new HttpClient(new Client(), $host, $port, $username, $password));
     }
 
     /** {@inheritdoc} */
