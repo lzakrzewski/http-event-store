@@ -1,8 +1,8 @@
 # HttpEventStoreClient
 [![Build Status](https://travis-ci.org/lzakrzewski/http-event-store.svg?branch=master)](https://travis-ci.org/lzakrzewski/http-event-store)
 
-Client for communication with Http Event Store API.
-Read more about Http Event Store API [http://docs.geteventstore.com/http-api/latest](http://docs.geteventstore.com/http-api/latest).
+Client for communication with Event Store `HTTP API`.
+Read more about Event Store `HTTP API` [http://docs.geteventstore.com/http-api/latest](http://docs.geteventstore.com/http-api/latest).
 
 This library is independent part of [es-sandbox](https://github.com/lzakrzewski/es-sandbox).
 
