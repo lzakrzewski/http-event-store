@@ -1,5 +1,5 @@
 # HttpEventStoreClient
-[![Build Status](https://travis-ci.org/lzakrzewski/http-event-store.svg?branch=master)](https://travis-ci.org/lzakrzewski/http-event-store)
+[![Build Status](https://travis-ci.org/lzakrzewski/http-event-store.svg?branch=master)](https://travis-ci.org/lzakrzewski/http-event-store) [![Latest Unstable Version](https://poser.pugx.org/lzakrzewski/http-event-store/v/unstable)](https://packagist.org/packages/lzakrzewski/http-event-store) [![Total Downloads](https://poser.pugx.org/lzakrzewski/http-event-store/downloads)](https://packagist.org/packages/lzakrzewski/http-event-store)
 
 Client for communication with Event Store `HTTP API`.
 Read more about Event Store `HTTP API` [http://docs.geteventstore.com/http-api/latest](http://docs.geteventstore.com/http-api/latest).
