@@ -11,7 +11,7 @@ class ProjectionExamplesTest extends EventStoreTestCase
     /** @test */
     public function object_creation_with_factory_method()
     {
-        $projection = \HttpEventStore\Http\HttpProjection::create('localhost', '2113', 'admin', 'changeit');
+        $projection = \HttpEventStore\Http\HttpProjection::create('127.0.0.1', '2113', 'admin', 'changeit');
 
         $this->assertInstanceOf(HttpProjection::class, $projection);
     }
@@ -31,7 +31,7 @@ class ProjectionExamplesTest extends EventStoreTestCase
     {
         $streamId = Uuid::uuid4()->toString();
 
-        $eventStore = \HttpEventStore\Http\HttpEventStore::create('localhost', '2113');
+        $eventStore = \HttpEventStore\Http\HttpEventStore::create('127.0.0.1', '2113');
         $event1     = new \HttpEventStore\WritableEvent('productWasAddedToBasket', ['productId' => 'product1', 'name' => 'Teapot']);
         $event2     = new \HttpEventStore\WritableEvent('productWasRemovedFromBasket', ['productId' => 'product1']);
 
@@ -39,7 +39,7 @@ class ProjectionExamplesTest extends EventStoreTestCase
         $eventStore->writeStream($streamId, [$event1, $event2]);
 
         // Creating a projection
-        $projection = \HttpEventStore\Http\HttpProjection::create('localhost', '2113', 'admin', 'changeit');
+        $projection = \HttpEventStore\Http\HttpProjection::create('127.0.0.1', '2113', 'admin', 'changeit');
 
         $countOfEventsQuery = <<<STR
 fromStream('$streamId').
@@ -55,6 +55,6 @@ STR;
         // Reading of a projection
         $countOfEvents = $projection->readProjection($projectionId);
 
-        $this->assertEquals(["count" => 2], $countOfEvents);
+        $this->assertEquals(['count' => 2], $countOfEvents);
     }
 }

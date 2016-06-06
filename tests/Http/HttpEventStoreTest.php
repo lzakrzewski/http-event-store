@@ -15,7 +15,7 @@ class HttpEventStoreTest extends EventStoreTestCase
     /** @test */
     public function it_can_be_created_with_factory_method()
     {
-        $this->assertInstanceOf(HttpEventStore::class, HttpEventStore::create('localhost', '2113'));
+        $this->assertInstanceOf(HttpEventStore::class, HttpEventStore::create('127.0.0.1', '2113'));
     }
 
     /** @test */

@@ -34,7 +34,7 @@ Example
 ```php
 $streamId = Uuid::uuid4()->toString();
 
-$eventStore = \HttpEventStore\Http\HttpEventStore::create('localhost', '2113');
+$eventStore = \HttpEventStore\Http\HttpEventStore::create('127.0.0.1', '2113');
 $event1     = new \HttpEventStore\WritableEvent('productWasAddedToBasket', ['productId' => 'product1', 'name' => 'Teapot']);
 $event2     = new \HttpEventStore\WritableEvent('productWasRemovedFromBasket', ['productId' => 'product1']);
 

@@ -28,7 +28,7 @@ abstract class EventStoreTestCase extends \PHPUnit_Framework_TestCase
 
     protected function givenEventStoreFailed()
     {
-        $this->client     = new HttpClient(new Guzzle(), '128.0.0.1', '2113', 'admin', 'changeit');
+        $this->client     = new HttpClient(new Guzzle(), 'wrong-address', '2113', 'admin', 'changeit');
         $this->eventStore = new HttpEventStore($this->client);
         $this->projection = new HttpProjection($this->client);
     }

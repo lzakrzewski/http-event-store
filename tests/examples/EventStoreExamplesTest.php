@@ -11,7 +11,7 @@ class EventStoreExamplesTest extends EventStoreTestCase
     /** @test */
     public function object_creation_with_factory_method()
     {
-        $eventStore = \HttpEventStore\Http\HttpEventStore::create('localhost', '2113');
+        $eventStore = \HttpEventStore\Http\HttpEventStore::create('127.0.0.1', '2113');
 
         $this->assertInstanceOf(HttpEventStore::class, $eventStore);
     }
@@ -31,7 +31,7 @@ class EventStoreExamplesTest extends EventStoreTestCase
     {
         $streamId = Uuid::uuid4()->toString();
 
-        $eventStore = \HttpEventStore\Http\HttpEventStore::create('localhost', '2113');
+        $eventStore = \HttpEventStore\Http\HttpEventStore::create('127.0.0.1', '2113');
         $event1     = new \HttpEventStore\WritableEvent('productWasAddedToBasket', ['productId' => 'product1', 'name' => 'Teapot']);
         $event2     = new \HttpEventStore\WritableEvent('productWasRemovedFromBasket', ['productId' => 'product1']);
 
@@ -45,7 +45,7 @@ class EventStoreExamplesTest extends EventStoreTestCase
     {
         $streamId = Uuid::uuid4()->toString();
 
-        $eventStore = \HttpEventStore\Http\HttpEventStore::create('localhost', '2113');
+        $eventStore = \HttpEventStore\Http\HttpEventStore::create('127.0.0.1', '2113');
         $event1     = new \HttpEventStore\WritableEvent('productWasAddedToBasket', ['productId' => 'product1', 'name' => 'Teapot']);
         $event2     = new \HttpEventStore\WritableEvent('productWasRemovedFromBasket', ['productId' => 'product1']);
         $eventStore->writeStream($streamId, [$event1, $event2]);
@@ -60,7 +60,7 @@ class EventStoreExamplesTest extends EventStoreTestCase
     {
         $streamId = Uuid::uuid4()->toString();
 
-        $eventStore = \HttpEventStore\Http\HttpEventStore::create('localhost', '2113');
+        $eventStore = \HttpEventStore\Http\HttpEventStore::create('127.0.0.1', '2113');
         $event      = new \HttpEventStore\WritableEvent('productWasAddedToBasket', ['productId' => 'product1', 'name' => 'Teapot']);
         $eventStore->writeStream($streamId, [$event]);
 
@@ -74,7 +74,7 @@ class EventStoreExamplesTest extends EventStoreTestCase
     {
         $streamId = Uuid::uuid4()->toString();
 
-        $eventStore = \HttpEventStore\Http\HttpEventStore::create('localhost', '2113');
+        $eventStore = \HttpEventStore\Http\HttpEventStore::create('127.0.0.1', '2113');
         $event1     = new \tests\HttpEventStore\fixtures\CustomEvent('productWasAddedToBasket', ['productId' => 'product1', 'name' => 'Teapot']);
         $event2     = new \tests\HttpEventStore\fixtures\CustomEvent('productWasRemovedFromBasket', ['productId' => 'product1']);
 

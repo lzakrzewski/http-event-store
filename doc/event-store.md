@@ -37,7 +37,7 @@ interface EventStore
 
 #### With factory method
 ```php
-$eventStore = \HttpEventStore\Http\HttpEventStore::create('localhost', '2113');
+$eventStore = \HttpEventStore\Http\HttpEventStore::create('127.0.0.1', '2113');
 ```
 
 #### With dependency injection
@@ -51,7 +51,7 @@ $eventStore = new \HttpEventStore\Http\HttpEventStore($httpClient);
 ```php
 $streamId = Uuid::uuid4()->toString();
 
-$eventStore = \HttpEventStore\Http\HttpEventStore::create('localhost', '2113');
+$eventStore = \HttpEventStore\Http\HttpEventStore::create('127.0.0.1', '2113');
 $event1     = new \HttpEventStore\WritableEvent('productWasAddedToBasket', ['productId' => 'product1', 'name' => 'Teapot']);
 $event2     = new \HttpEventStore\WritableEvent('productWasRemovedFromBasket', ['productId' => 'product1']);
 
@@ -62,7 +62,7 @@ $eventStore->writeStream($streamId, [$event1, $event2]);
 ```php
 $streamId = Uuid::uuid4()->toString();
 
-$eventStore = \HttpEventStore\Http\HttpEventStore::create('localhost', '2113');
+$eventStore = \HttpEventStore\Http\HttpEventStore::create('127.0.0.1', '2113');
 $event1     = new \HttpEventStore\WritableEvent('productWasAddedToBasket', ['productId' => 'product1', 'name' => 'Teapot']);
 $event2     = new \HttpEventStore\WritableEvent('productWasRemovedFromBasket', ['productId' => 'product1']);
 $eventStore->writeStream($streamId, [$event1, $event2]);
@@ -74,7 +74,7 @@ $events = $eventStore->readStream($streamId);
 ```php
 $streamId = Uuid::uuid4()->toString();
 
-$eventStore = \HttpEventStore\Http\HttpEventStore::create('localhost', '2113');
+$eventStore = \HttpEventStore\Http\HttpEventStore::create('127.0.0.1', '2113');
 $event      = new \HttpEventStore\WritableEvent('productWasAddedToBasket', ['productId' => 'product1', 'name' => 'Teapot']);
 $eventStore->writeStream($streamId, [$event]);
 

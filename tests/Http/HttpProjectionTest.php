@@ -13,7 +13,7 @@ class HttpProjectionTest extends EventStoreTestCase
     /** @test */
     public function it_can_be_created_with_factory_method()
     {
-        $this->assertInstanceOf(HttpProjection::class, HttpProjection::create('localhost', '2113', 'admin', 'changeit'));
+        $this->assertInstanceOf(HttpProjection::class, HttpProjection::create('127.0.0.1', '2113', 'admin', 'changeit'));
     }
 
     /** @test */

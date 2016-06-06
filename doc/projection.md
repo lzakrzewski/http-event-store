@@ -29,7 +29,7 @@ interface Projection
 
 #### With factory method
 ```php
-$projection = \HttpEventStore\Http\HttpProjection::create('localhost', '2113', 'admin', 'changeit');
+$projection = \HttpEventStore\Http\HttpProjection::create('127.0.0.1', '2113', 'admin', 'changeit');
 ```
 
 #### With dependency injection
@@ -43,7 +43,7 @@ $projection = new \HttpEventStore\Http\HttpProjection($httpClient);
 ```php
         $streamId = Uuid::uuid4()->toString();
 
-        $eventStore = \HttpEventStore\Http\HttpEventStore::create('localhost', '2113');
+        $eventStore = \HttpEventStore\Http\HttpEventStore::create('127.0.0.1', '2113');
         $event1     = new \HttpEventStore\WritableEvent('productWasAddedToBasket', ['productId' => 'product1', 'name' => 'Teapot']);
         $event2     = new \HttpEventStore\WritableEvent('productWasRemovedFromBasket', ['productId' => 'product1']);
 
@@ -51,7 +51,7 @@ $projection = new \HttpEventStore\Http\HttpProjection($httpClient);
         $eventStore->writeStream($streamId, [$event1, $event2]);
 
         // Creating a projection
-        $projection = \HttpEventStore\Http\HttpProjection::create('localhost', '2113', 'admin', 'changeit');
+        $projection = \HttpEventStore\Http\HttpProjection::create('127.0.0.1', '2113', 'admin', 'changeit');
 
         $countOfEventsQuery = <<<STR
 fromStream('$streamId').
