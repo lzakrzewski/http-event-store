@@ -142,8 +142,8 @@ class HttpClientTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function it_can_read_event_store_in_bath()
     {
-        $expectedRequest1 = new Request('GET', 'http://some-absolute/uri1', ['Accept' => ['application/vnd.eventstore.atom+json']]);
-        $expectedRequest2 = new Request('GET', 'http://some-absolute/uri2', ['Accept' => ['application/vnd.eventstore.atom+json']]);
+        $expectedRequest1 = new Request('GET', 'http://localhost:4333/uri1', ['Accept' => ['application/vnd.eventstore.atom+json']]);
+        $expectedRequest2 = new Request('GET', 'http://localhost:4333/uri2', ['Accept' => ['application/vnd.eventstore.atom+json']]);
 
         $this->guzzle
             ->sendAsync($expectedRequest1, [])
@@ -157,11 +157,11 @@ class HttpClientTest extends \PHPUnit_Framework_TestCase
                 new Response(200, [], '{"some": "data2"}')
             );
 
-        $result = $this->client->requestsToAbsoluteUriInBatch(
+        $result = $this->client->requestsBatch(
             HttpClient::METHOD_GET,
             [
-                'http://some-absolute/uri1',
-                'http://some-absolute/uri2',
+                'http://localhost:4333/uri1',
+                'http://localhost:4333/uri2',
             ]
         );
 
@@ -181,7 +181,7 @@ class HttpClientTest extends \PHPUnit_Framework_TestCase
                 new Response(200, [], '{"some": "data1"}')
             );
 
-        $this->client->requestsToAbsoluteUriInBatch(
+        $this->client->requestsBatch(
             'PUT',
             [
                 'http://some-absolute/uri1',

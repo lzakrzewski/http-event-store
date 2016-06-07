@@ -39,23 +39,81 @@ class HttpEventStore implements EventStore
     public function readStream($streamId)
     {
         try {
-            $result = $this->client->request(HttpClient::METHOD_GET, $this->streamUri($streamId));
+            $eventUris = $this->eventUris($streamId);
 
-            if (!isset($result['entries'])) {
+            if (empty($eventUris)) {
                 return [];
             }
 
-            return $this->readEvents(
-                array_map(
-                    function (array $entry) {
-                        return $entry['id'];
-                    },
-                    $result['entries']
-                )
-            );
+            return $this->readEvents($eventUris);
         } catch (RequestException $e) {
             $this->handleException($e);
         }
+    }
+
+    private function eventUris($streamId)
+    {
+        $firstPage = $this
+            ->client
+            ->request(HttpClient::METHOD_GET, $this->streamUri($streamId));
+
+        $nextPageUrl = $this->nextPageUrl($firstPage);
+
+        return array_reverse(array_merge(
+            $this->readEventUrisFromPageUrl($nextPageUrl),
+            $this->readEventUrisFromPage($firstPage)
+        ));
+    }
+
+    private function readEventUrisFromPage(array $page)
+    {
+        if (!isset($page['entries'])) {
+            return [];
+        }
+
+        return array_reverse(array_map(function (array $entry) {
+            return $entry['id'];
+        }, $page['entries']));
+    }
+
+    private function readEventUrisFromPageUrl($pageUrl)
+    {
+        $page = $this
+            ->client
+            ->request(HttpClient::METHOD_GET, $pageUrl);
+
+        $eventsFromNextPage = [];
+
+        if (null === $page) {
+            return [];
+        }
+
+        $nextPageUrl = $this->nextPageUrl($page);
+
+        if (null !== $nextPageUrl) {
+            $eventsFromNextPage = $this->readEventUrisFromPageUrl($nextPageUrl);
+        }
+
+        return array_merge($eventsFromNextPage, $this->readEventUrisFromPage($page));
+    }
+
+    private function nextPageUrl(array $page)
+    {
+        if (!isset($page['links'])) {
+            return;
+        }
+
+        $nextPageLink = array_filter($page['links'], function ($link) {
+            if (isset($link['relation']) && $link['relation'] == 'next') {
+                return true;
+            }
+        });
+
+        if (empty($nextPageLink)) {
+            return;
+        }
+
+        return current($nextPageLink)['uri'];
     }
 
     /** {@inheritdoc} */
@@ -80,7 +138,7 @@ class HttpEventStore implements EventStore
 
     private function readEvents(array $eventUris)
     {
-        $results = $this->client->requestsToAbsoluteUriInBatch(HttpClient::METHOD_GET, $eventUris);
+        $results = $this->client->requestsBatch(HttpClient::METHOD_GET, $eventUris);
 
         return array_reverse(array_map(function (array $result) {
             return new WritableEvent(

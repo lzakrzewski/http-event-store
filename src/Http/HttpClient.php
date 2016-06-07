@@ -53,15 +53,15 @@ class HttpClient
         return $this->decodeResponse($response);
     }
 
-    public function requestsToAbsoluteUriInBatch($method, $absoluteUris)
+    public function requestsBatch($method, $uris)
     {
         $requests = array_map(
             function ($eventUri) use ($method) {
                 $this->validateMethod($method);
 
-                return new Request($method, $eventUri, ['Accept' => [self::FORMAT_EVENT_STORE_ATOM]]);
+                return new Request($method, $this->uri($eventUri), ['Accept' => [self::FORMAT_EVENT_STORE_ATOM]]);
             },
-            $absoluteUris
+            $uris
         );
 
         $responses = Pool::batch($this->guzzle, $requests);
@@ -121,6 +121,10 @@ class HttpClient
 
     private function uri($endpoint)
     {
+        if (false !== strpos($endpoint, $this->url)) {
+            return $endpoint;
+        }
+
         return sprintf('%s/%s', $this->url, $endpoint);
     }
 }

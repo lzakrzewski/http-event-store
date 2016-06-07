@@ -40,6 +40,16 @@ class HttpEventStoreTest extends EventStoreTestCase
     }
 
     /** @test */
+    public function it_can_read_a_stream_with_a_lot_of_events()
+    {
+        $streamId = Uuid::uuid4()->toString();
+
+        $this->given([$streamId => $events = $this->events(71)]);
+
+        $this->assertEquals($events, $this->eventStore->readStream($streamId));
+    }
+
+    /** @test */
     public function it_does_not_read_events_from_another_stream()
     {
         $streamId1 = Uuid::uuid4()->toString();
@@ -207,5 +217,16 @@ class HttpEventStoreTest extends EventStoreTestCase
         $this->givenEventStoreFailed();
 
         $this->eventStore->deleteStream($streamId);
+    }
+
+    private function events($limit)
+    {
+        $events = [];
+
+        for ($eventIdx = 1; $eventIdx <= $limit; ++$eventIdx) {
+            $events[] = new WritableEvent('event'.$eventIdx, ['message' => 'text'.$eventIdx]);
+        }
+
+        return $events;
     }
 }
