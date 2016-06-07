@@ -6,6 +6,8 @@ use HttpEventStore\Exception\EventStoreException;
 
 interface Projection
 {
+    const PROJECTION_ALREADY_EXIST = 409;
+
     /**
      * @param $projectionId
      * @param $query

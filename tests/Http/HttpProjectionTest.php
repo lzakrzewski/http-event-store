@@ -3,6 +3,7 @@
 namespace tests\HttpEventStore\Http;
 
 use HttpEventStore\Exception\EventStoreConnectionFailed;
+use HttpEventStore\Exception\ProjectionAlreadyExist;
 use HttpEventStore\Http\HttpProjection;
 use HttpEventStore\WritableEvent;
 use Ramsey\Uuid\Uuid;
@@ -34,6 +35,26 @@ class HttpProjectionTest extends EventStoreTestCase
         $this->assertThatProjectionExists($projectionId);
     }
 
+    /** @test */
+    public function it_can_not_create_same_projection_twice()
+    {
+        $this->expectException(ProjectionAlreadyExist::class);
+        
+        $streamId     = Uuid::uuid4()->toString();
+        $projectionId = 'projection-'.$streamId;
+
+        $this->given([
+            $streamId => [
+                new WritableEvent('event1', ['message' => 'text1']),
+                new WritableEvent('event2', ['message' => 'text2']),
+            ],
+        ]);
+        
+        $this->givenProjectionExist($projectionId, $streamId);
+
+        $this->projection->createProjection($projectionId, $this->countEventsQuery($streamId));
+    }
+    
     /** @test */
     public function it_reads_projection()
     {
@@ -106,5 +127,10 @@ fromStream('$streamId').
     })
 ;
 STR;
+    }
+
+    private function givenProjectionExist($projectionId, $streamId)
+    {
+        $this->projection->createProjection($projectionId, $this->countEventsQuery($streamId));
     }
 }

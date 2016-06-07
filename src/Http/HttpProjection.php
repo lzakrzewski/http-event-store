@@ -5,6 +5,7 @@ namespace HttpEventStore\Http;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use HttpEventStore\Exception\EventStoreConnectionFailed;
+use HttpEventStore\Exception\ProjectionAlreadyExist;
 use HttpEventStore\Projection;
 
 class HttpProjection implements Projection
@@ -44,6 +45,10 @@ class HttpProjection implements Projection
                 HttpClient::FORMAT_PROJECTION
             );
         } catch (RequestException $e) {
+            if ($e->getCode() === self::PROJECTION_ALREADY_EXIST) {
+                throw new ProjectionAlreadyExist(sprintf("Projection with id %s already exist.", $projectionId));
+            }
+            
             throw new EventStoreConnectionFailed($e->getMessage());
         }
     }
