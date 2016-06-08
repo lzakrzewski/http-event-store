@@ -39,7 +39,7 @@ class HttpProjectionTest extends EventStoreTestCase
     public function it_can_not_create_same_projection_twice()
     {
         $this->expectException(ProjectionAlreadyExist::class);
-        
+
         $streamId     = Uuid::uuid4()->toString();
         $projectionId = 'projection-'.$streamId;
 
@@ -49,12 +49,12 @@ class HttpProjectionTest extends EventStoreTestCase
                 new WritableEvent('event2', ['message' => 'text2']),
             ],
         ]);
-        
+
         $this->givenProjectionExist($projectionId, $streamId);
 
         $this->projection->createProjection($projectionId, $this->countEventsQuery($streamId));
     }
-    
+
     /** @test */
     public function it_reads_projection()
     {

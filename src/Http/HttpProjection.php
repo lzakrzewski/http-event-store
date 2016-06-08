@@ -46,9 +46,9 @@ class HttpProjection implements Projection
             );
         } catch (RequestException $e) {
             if ($e->getCode() === self::PROJECTION_ALREADY_EXIST) {
-                throw new ProjectionAlreadyExist(sprintf("Projection with id %s already exist.", $projectionId));
+                throw new ProjectionAlreadyExist(sprintf('Projection with id %s already exist.', $projectionId));
             }
-            
+
             throw new EventStoreConnectionFailed($e->getMessage());
         }
     }
